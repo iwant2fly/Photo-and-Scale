@@ -1,0 +1,27 @@
+import serial
+
+def get_weight_from_scale():
+    # Configure the serial connection (adjust the port and baudrate as needed)
+    ser = serial.Serial('COM3', 9600, timeout=1)
+    
+    try:
+        ser.flushInput()
+        ser.write(b'\r\n')  # Send command to get weight
+        weight_data = ser.readline().decode('utf-8').strip()
+        
+        # Assuming the scale returns weight in ounces
+        weight = round(float(weight_data), 1)
+        return weight
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
+    finally:
+        ser.close()
+
+if __name__ == "__main__":
+    input("Press Enter to capture weight...")
+    weight = get_weight_from_scale()
+    if weight is not None:
+        print(f"Weight: {weight} ounces")
+    else:
+        print("Failed to capture weight.")
